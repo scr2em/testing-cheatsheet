@@ -1,7 +1,6 @@
-import TestUtils from "react-dom/test-utils";
-
 import { createRoot } from "react-dom/client";
 import { useState } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 function Counter() {
     const [count, setCount] = useState(0);
@@ -9,30 +8,66 @@ function Counter() {
     return (
         <div>
             <span data-testid="count">{count}</span>
-            <button onClick={() => setCount(count + 1)}>Increment</button>
+            <button id="increase" onClick={() => setCount((prev) => prev + 1)}>
+                Increase
+            </button>
+            <button id="decrease" onClick={() => setCount((prev) => prev - 1)}>
+                Decrease
+            </button>
         </div>
     );
 }
 
-describe.skip("Counter component", () => {
+/*
+--------------------------------------------------------------------------
+|                               test file                                |
+--------------------------------------------------------------------------
+ */
+
+describe.todo("Counter component", () => {
+    it("increments count on button click", () => {
+        const app = document.createElement("div");
+        const root = createRoot(app);
+        root.render(<Counter />);
+
+        // code here
+    });
+});
+
+/*
+
+describe("Counter component", () => {
     it("increments count on button click", () => {
         // Set up our document body
-        document.body.innerHTML = '<div id="root"></div>';
-        const root = document.getElementById("root");
+        const app = document.createElement("div");
+        const root = createRoot(app);
+        root.render(<Counter />);
 
-        // Render the Counter component into the div with id 'root'
-        createRoot(root!).render(<Counter />);
-        // Find the button and span elements
-        const button = document.querySelector("button");
-        const countSpan = document.querySelector('[data-testid="count"]');
+        setTimeout(() => {
+            const countSpan = app.querySelector('[data-testid="count"]');
 
-        // Initial count should be 0
-        expect(countSpan.textContent).toBe("0");
+            expect(countSpan?.textContent).toBe("0");
+            const increase = app.querySelector("#increase") as HTMLButtonElement;
+            increase?.click();
 
-        // Simulate a click event on the button
-        TestUtils.Simulate.click(button);
+            setTimeout(() => {
+                // Delay assertion to ensure React has updated the DOM
+                expect(countSpan?.textContent).toBe("1");
+            }, 0);
+        }, 0);
+    });
+});
 
-        // After clicking, the count should be incremented to 1
-        expect(countSpan.textContent).toBe("1");
+ */
+describe("Counter component", () => {
+    it("increments count on button click", async () => {
+        // ARRANGE
+        const { container } = render(<Counter />);
+
+        // ACT
+        fireEvent.click(container.querySelector("#increase")!);
+
+        // ASSERT
+        expect(screen.getByTestId("count").textContent).toBe("1");
     });
 });

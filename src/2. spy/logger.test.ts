@@ -2,6 +2,12 @@ function logger() {
     console.log("hi there");
 }
 
+/*
+--------------------------------------------------------------------------
+|                               test file                                |
+--------------------------------------------------------------------------
+ */
+
 describe("logger", () => {
     it("should call console.log", () => {
         const spy = vi.spyOn(console, "log");
@@ -10,7 +16,6 @@ describe("logger", () => {
 
         expect(spy).toHaveBeenCalledWith("hi there");
 
-        // Restore the original method to remove the spy
         spy.mockRestore();
     });
 });
